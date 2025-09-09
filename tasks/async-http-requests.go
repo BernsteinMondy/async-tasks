@@ -16,6 +16,14 @@ func FetchURLs(urls []string) map[string]string {
 	var wg sync.WaitGroup
 	mu := &sync.Mutex{}
 	results := make(map[string]string)
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+		Transport: &http.Transport{
+			MaxIdleConns:        10,
+			MaxIdleConnsPerHost: 10,
+			IdleConnTimeout:     30 * time.Second,
+		},
+	}
 
 	sem := make(chan struct{}, 10)
 
@@ -30,8 +38,6 @@ func FetchURLs(urls []string) map[string]string {
 			go func(u string) {
 				defer wg.Done()
 				defer func() { <-sem }()
-
-				client := &http.Client{Timeout: 5 * time.Second}
 
 				req, err := http.NewRequestWithContext(ctx, "GET", u, nil)
 				if err != nil {

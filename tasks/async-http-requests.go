@@ -22,7 +22,7 @@ func FetchURLs(urls []string) map[string]string {
 	for _, url := range urls {
 		select {
 		case <-ctx.Done():
-			break
+			return results
 		default:
 			wg.Add(1)
 			sem <- struct{}{}

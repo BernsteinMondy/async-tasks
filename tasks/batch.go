@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+const (
+	maxBatchSize = 5
+	batchTimeout = 2 * time.Second
+)
+
 func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -19,6 +24,7 @@ func main() {
 			input <- i
 			time.Sleep(300 * time.Millisecond)
 		}
+		close(input)
 	}()
 
 	<-ctx.Done()
@@ -26,11 +32,6 @@ func main() {
 }
 
 func StartBatchProcessor(ctx context.Context, input <-chan int) {
-	const (
-		maxBatchSize = 5
-		batchTimeout = 2 * time.Second
-	)
-
 	timer := time.NewTimer(batchTimeout)
 	batch := make([]int, 0, maxBatchSize)
 	for {

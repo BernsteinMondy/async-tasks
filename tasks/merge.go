@@ -4,7 +4,7 @@ import "sync"
 
 func Merge(cs ...<-chan int) <-chan int {
 	wg := new(sync.WaitGroup)
-	out := make(chan int)
+	out := make(chan int, len(cs))
 
 	fn := func(c <-chan int) {
 		defer wg.Done()

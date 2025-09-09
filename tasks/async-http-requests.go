@@ -51,7 +51,6 @@ func FetchURLs(urls []string) map[string]string {
 					return
 				}
 
-				// Выполняем запрос
 				resp, err := client.Do(req)
 				if err != nil {
 					mu.Lock()
@@ -62,7 +61,6 @@ func FetchURLs(urls []string) map[string]string {
 				}
 				defer resp.Body.Close()
 
-				// Читаем тело ответа
 				body, err := io.ReadAll(resp.Body)
 				if err != nil {
 					mu.Lock()

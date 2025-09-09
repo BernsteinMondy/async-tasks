@@ -31,15 +31,6 @@ func FetchURLs(urls []string) map[string]string {
 				defer wg.Done()
 				defer func() { <-sem }()
 
-				select {
-				case <-ctx.Done():
-					mu.Lock()
-					results[u] = "CANCELLED: request cancelled due to another error"
-					mu.Unlock()
-					return
-				default:
-				}
-
 				client := &http.Client{Timeout: 5 * time.Second}
 
 				req, err := http.NewRequestWithContext(ctx, "GET", u, nil)
